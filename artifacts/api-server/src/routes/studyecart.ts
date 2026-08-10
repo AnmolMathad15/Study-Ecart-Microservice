@@ -159,11 +159,43 @@ async function allReferenceData() {
   };
 }
 
+async function migrateCareerCourseCatalog() {
+  const departments = await db.select().from(departmentsTable);
+  const byCode = new Map(departments.map((department) => [department.code, department]));
+  const fallbackDepartment = departments[0];
+  if (!fallbackDepartment) return;
+
+  const courseUpdates = [
+    { code: "JAVA-FS", name: "Java Full Stack Development", duration: 1, departmentCode: "CSE", description: "Build production-ready applications with Java, Spring Boot, databases, and modern frontend development." },
+    { code: "PY-AI", name: "AI Automation using Python", duration: 1, departmentCode: "ISE", description: "Create practical AI-powered automations with Python, APIs, prompt workflows, and intelligent agents." },
+    { code: "UIUX-DESIGN", name: "UI/UX Designing", duration: 1, departmentCode: "ECE", description: "Learn user research, wireframing, prototyping, and visual systems for thoughtful digital products." },
+    { code: "DIGITAL-MKT", name: "Digital Marketing", duration: 1, departmentCode: "BBA", description: "Master content, social media, performance campaigns, analytics, and growth strategy." },
+    { code: "PY-DS", name: "Data Science using Python", duration: 1, departmentCode: "ISE", description: "Turn real-world data into decisions with Python, statistics, visualization, and machine learning." },
+    { code: "WEB-FS", name: "Full Stack Web Development", duration: 1, departmentCode: "CSE", description: "Design and ship responsive web products across the frontend, backend, database, and deployment layers." },
+  ];
+  const courses = await db.select().from(coursesTable);
+  for (const [index, catalogCourse] of courseUpdates.entries()) {
+    const department = byCode.get(catalogCourse.departmentCode) ?? fallbackDepartment;
+    const existing = courses.find((course) => course.id === index + 1);
+    if (existing) {
+      await db.update(coursesTable)
+        .set({ ...catalogCourse, departmentId: department.id, updatedAt: new Date() })
+        .where(eq(coursesTable.id, existing.id));
+    } else {
+      const byCatalogCode = courses.find((course) => course.code === catalogCourse.code);
+      if (!byCatalogCode) {
+        await db.insert(coursesTable).values({ ...catalogCourse, departmentId: department.id });
+      }
+    }
+  }
+}
+
 async function ensureSeeded(): Promise<void> {
   if (!seedPromise) {
     seedPromise = (async () => {
       const existing = await db.select({ id: departmentsTable.id }).from(departmentsTable).limit(1);
       if (existing.length) {
+        await migrateCareerCourseCatalog();
         const existingUsers = await db.select().from(usersTable);
         if (!existingUsers.length) {
           await db.insert(usersTable).values([
@@ -193,10 +225,12 @@ async function ensureSeeded(): Promise<void> {
       const courses = await db
         .insert(coursesTable)
         .values([
-          { name: "B.Tech Computer Science", code: "BTECH-CSE", duration: 4, departmentId: departments[0].id, description: "Core computer science and engineering program." },
-          { name: "B.Tech Information Science", code: "BTECH-ISE", duration: 4, departmentId: departments[1].id, description: "Information systems, software, and data engineering." },
-          { name: "B.Tech Electronics", code: "BTECH-ECE", duration: 4, departmentId: departments[2].id, description: "Electronics and communication engineering program." },
-          { name: "Bachelor of Business Administration", code: "BBA-GEN", duration: 3, departmentId: departments[3].id, description: "A practical foundation in business and management." },
+          { name: "Java Full Stack Development", code: "JAVA-FS", duration: 1, departmentId: departments[0].id, description: "Build production-ready applications with Java, Spring Boot, databases, and modern frontend development." },
+          { name: "AI Automation using Python", code: "PY-AI", duration: 1, departmentId: departments[1].id, description: "Create practical AI-powered automations with Python, APIs, prompt workflows, and intelligent agents." },
+          { name: "UI/UX Designing", code: "UIUX-DESIGN", duration: 1, departmentId: departments[2].id, description: "Learn user research, wireframing, prototyping, and visual systems for thoughtful digital products." },
+          { name: "Digital Marketing", code: "DIGITAL-MKT", duration: 1, departmentId: departments[3].id, description: "Master content, social media, performance campaigns, analytics, and growth strategy." },
+          { name: "Data Science using Python", code: "PY-DS", duration: 1, departmentId: departments[1].id, description: "Turn real-world data into decisions with Python, statistics, visualization, and machine learning." },
+          { name: "Full Stack Web Development", code: "WEB-FS", duration: 1, departmentId: departments[0].id, description: "Design and ship responsive web products across the frontend, backend, database, and deployment layers." },
         ])
         .returning();
 

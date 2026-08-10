@@ -19,7 +19,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="app-shell">
       <aside className={`sidebar flex flex-col p-4 md:p-5 ${mobileOpen ? 'fixed inset-y-0 left-0 z-30' : ''}`}>
         <div className="mb-10 flex items-center gap-3 px-2">
-          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#d8f36a] text-[#103d32]"><GraduationCap size={22} strokeWidth={2.5} /></div>
+          <img src={`${import.meta.env.BASE_URL}studyecart-logo.png`} alt="StudyEcart" className="h-10 w-10 shrink-0 rounded-full object-cover" />
           <div className="brand-copy"><div className="font-display text-base font-extrabold tracking-tight text-white">StudyEcart</div><div className="text-[10px] uppercase tracking-[.16em] text-[#8cb9aa]">Campus operations</div></div>
           <button className="ml-auto text-[#a6cabe] sm:hidden" onClick={() => setMobileOpen(false)} aria-label="Close menu" data-testid="button-close-menu"><X size={18} /></button>
         </div>
