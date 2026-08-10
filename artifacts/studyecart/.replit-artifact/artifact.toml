@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "StudyEcart Student Management"
+description = "A production-quality student management system for administrators and staff to manage students, departments, courses, attendance, and academic records through a polished StudyEcart dashboard."
+version = "1.0.0"
+id = "artifacts/studyecart"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24558
+
+[services.development]
+run = "pnpm --filter @workspace/studyecart run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/studyecart", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/studyecart/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24558"
+BASE_PATH = "/"

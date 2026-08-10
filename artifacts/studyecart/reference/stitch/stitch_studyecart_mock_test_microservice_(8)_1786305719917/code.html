@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StudyEcart Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#005235",
+                        "surface-container": "#eceef0",
+                        "tertiary-fixed-dim": "#f9bb65",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e6e8ea",
+                        "on-surface": "#191c1e",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#825400",
+                        "inverse-surface": "#2d3133",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-primary-container": "#92e8bb",
+                        "warning-amber": "#ef9f13",
+                        "outline-variant": "#bec9c0",
+                        "on-secondary-container": "#586377",
+                        "on-surface-variant": "#3f4942",
+                        "surface-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#d8e3fb",
+                        "primary-fixed-dim": "#82d8ab",
+                        "on-background": "#191c1e",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e0e3e5",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "on-tertiary-fixed-variant": "#633f00",
+                        "on-tertiary-container": "#ffcf91",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#006b47",
+                        "primary": "#005034",
+                        "background": "#f7f9fb",
+                        "tertiary-fixed": "#ffddb4",
+                        "primary-fixed": "#9df5c6",
+                        "surface-high": "#e6e8ea",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-tertiary-fixed": "#291800",
+                        "surface-bright": "#f7f9fb",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-tint": "#036c48",
+                        "surface": "#f7f9fb",
+                        "on-secondary-fixed": "#111c2d",
+                        "on-primary-fixed": "#002113",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "secondary": "#545f73",
+                        "error-ruby": "#ba1a1a",
+                        "success-emerald": "#00875a",
+                        "tertiary": "#623e00",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#82d8ab",
+                        "secondary-container": "#d5e0f8",
+                        "surface-dim": "#d8dadc",
+                        "outline": "#6f7a72"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "card-internal": "1.5rem",
+                        "grid-gutter": "1.5rem",
+                        "section-gap": "2.5rem",
+                        "container-padding": "2rem"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Inter"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["14px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-sm": ["12px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "1.6", "fontWeight": "500" }],
+                        "display-lg": ["36px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "label-sm": ["10px", { "lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "headline-sm": ["20px", { "lineHeight": "1.4", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="h-full bg-background flex flex-col antialiased">
+<!-- Top-level navigation shell suppressed as this is a transactional linear screen (Login) -->
+<main class="flex-grow flex items-center justify-center p-6 md:p-12 relative overflow-hidden">
+<!-- Subtle Ambient Background Decor -->
+<div class="absolute top-0 left-0 w-full h-full pointer-events-none opacity-30 z-0 flex justify-between">
+<div class="w-96 h-96 bg-primary-fixed rounded-full blur-[100px] -mt-20 -ml-20"></div>
+<div class="w-[500px] h-[500px] bg-secondary-fixed rounded-full blur-[120px] mt-40 -mr-40"></div>
+</div>
+<!-- Glassmorphism Card Container -->
+<div class="relative z-10 w-full max-w-md bg-surface-container-lowest border border-surface-variant rounded-xl shadow-lg p-8 md:p-10 backdrop-blur-md">
+<!-- Logo & Brand Header -->
+<div class="flex flex-col items-center mb-8">
+<div class="w-20 h-20 mb-4 bg-surface-container rounded-lg flex items-center justify-center overflow-hidden border border-outline-variant shadow-sm">
+<img alt="StudyEcart Logo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSS0KfVTrAWVCHJmQi9c8RJUS0mFRB_rJY3hbGWgaw67EBGSJ4s5qVHfGvQJiw1lKoptIIuq-55FYiyJbjj2Yy9pPKh-iF9cByKofuisszCdQJB0F81JWNryRcHMrm1pJAwDYWHpVERpnwXGjPmm0yY7IqN6WCWT1YOODoVAlZSgFfGuYDaB15Ip7gBo0_blPn_nJvNc6xrF7-7pbAirBjx1Ms6DJphKZrxYOAxiKZkUVEnxQitOxJ4UF6Z3fUnBry6w"/>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-surface text-center">Welcome back</h1>
+<p class="font-body-md text-body-md text-on-surface-variant text-center mt-2">Sign in to manage your student records.</p>
+</div>
+<!-- Login Form -->
+<form action="#" class="space-y-6" method="POST">
+<!-- Email/Username Field -->
+<div>
+<label class="block font-label-lg text-label-lg text-on-surface-variant mb-2" for="email">Email / Username</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline" data-icon="mail">mail</span>
+</div>
+<input autocomplete="email" class="block w-full pl-10 pr-3 py-3 border border-outline-variant rounded-lg bg-surface-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary font-body-md text-body-md transition-shadow" id="email" name="email" placeholder="admin@studyecart.com" required="" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div>
+<div class="flex items-center justify-between mb-2">
+<label class="block font-label-lg text-label-lg text-on-surface-variant" for="password">Password</label>
+<a class="font-label-lg text-label-lg text-primary hover:text-on-primary-fixed-variant transition-colors" href="#">Forgot password?</a>
+</div>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline" data-icon="lock">lock</span>
+</div>
+<input autocomplete="current-password" class="block w-full pl-10 pr-10 py-3 border border-outline-variant rounded-lg bg-surface-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary font-body-md text-body-md transition-shadow" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer group">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="visibility_off">visibility_off</span>
+</div>
+</div>
+</div>
+<!-- Remember Me -->
+<div class="flex items-center">
+<input class="h-5 w-5 rounded border-outline-variant text-primary focus:ring-primary bg-surface-lowest cursor-pointer" id="remember-me" name="remember-me" type="checkbox"/>
+<label class="ml-3 block font-body-md text-body-md text-on-surface-variant cursor-pointer" for="remember-me">
+                        Remember me
+                    </label>
+</div>
+<!-- Submit Button -->
+<div>
+<button class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-on-primary bg-primary hover:bg-on-primary-fixed-variant focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary font-label-lg text-label-lg transition-colors duration-200" type="submit">
+                        Sign In
+                    </button>
+</div>
+</form>
+<!-- Optional Footer for Support/Terms within the card context -->
+<div class="mt-8 pt-6 border-t border-surface-variant text-center">
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                    Need help accessing your account? <br/>
+                    Contact <a class="text-primary hover:underline" href="#">Support Services</a>
+</p>
+</div>
+</div>
+</main>
+</body></html>

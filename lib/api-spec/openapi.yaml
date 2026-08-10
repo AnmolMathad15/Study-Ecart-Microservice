@@ -10,6 +10,18 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication
+  - name: dashboard
+    description: Dashboard summaries
+  - name: students
+    description: Student management
+  - name: departments
+    description: Department management
+  - name: courses
+    description: Course management
+  - name: attendance
+    description: Attendance management
 paths:
   /healthz:
     get:
@@ -24,7 +36,455 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Authenticate a staff member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get dashboard statistics
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+  /students:
+    get:
+      operationId: getStudents
+      tags: [students]
+      summary: List students with search, filters, and pagination
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+        - name: search
+          in: query
+          schema: { type: string }
+        - name: departmentId
+          in: query
+          schema: { type: integer }
+        - name: courseId
+          in: query
+          schema: { type: integer }
+        - name: semester
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 12 }
+        - name: status
+          in: query
+          schema: { $ref: "#/components/schemas/StudentStatus" }
+      responses:
+        "200":
+          description: Paginated students
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentPage"
+    post:
+      operationId: createStudent
+      tags: [students]
+      summary: Create a student
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentInput"
+      responses:
+        "201":
+          description: Student created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /students/{id}:
+    get:
+      operationId: getStudent
+      tags: [students]
+      summary: Get a student by id
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Student
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      operationId: updateStudent
+      tags: [students]
+      summary: Update a student
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentInput"
+      responses:
+        "200":
+          description: Updated student
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+    delete:
+      operationId: deleteStudent
+      tags: [students]
+      summary: Delete a student
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Student deleted
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /departments:
+    get:
+      operationId: getDepartments
+      tags: [departments]
+      summary: List departments
+      responses:
+        "200":
+          description: Departments
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Department" }
+    post:
+      operationId: createDepartment
+      tags: [departments]
+      summary: Create a department
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DepartmentInput"
+      responses:
+        "201":
+          description: Department created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Department"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /departments/{id}:
+    get:
+      operationId: getDepartment
+      tags: [departments]
+      summary: Get a department
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Department
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Department"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      operationId: updateDepartment
+      tags: [departments]
+      summary: Update a department
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DepartmentInput"
+      responses:
+        "200":
+          description: Updated department
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Department"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+    delete:
+      operationId: deleteDepartment
+      tags: [departments]
+      summary: Delete a department
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Department deleted
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /courses:
+    get:
+      operationId: getCourses
+      tags: [courses]
+      summary: List courses
+      parameters:
+        - name: departmentId
+          in: query
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Course" }
+    post:
+      operationId: createCourse
+      tags: [courses]
+      summary: Create a course
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CourseInput"
+      responses:
+        "201":
+          description: Course created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /courses/{id}:
+    get:
+      operationId: getCourse
+      tags: [courses]
+      summary: Get a course
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Course
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      operationId: updateCourse
+      tags: [courses]
+      summary: Update a course
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CourseInput"
+      responses:
+        "200":
+          description: Updated course
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+    delete:
+      operationId: deleteCourse
+      tags: [courses]
+      summary: Delete a course
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Course deleted
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /attendance/student/{studentId}:
+    get:
+      operationId: getStudentAttendance
+      tags: [attendance]
+      summary: Get attendance records for a student
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Attendance records
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Attendance" }
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /attendance/student/{studentId}/summary:
+    get:
+      operationId: getAttendanceSummary
+      tags: [attendance]
+      summary: Calculate attendance summary
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Attendance summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AttendanceSummary"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /attendance:
+    post:
+      operationId: createAttendance
+      tags: [attendance]
+      summary: Create an attendance record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AttendanceInput"
+      responses:
+        "201":
+          description: Attendance created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Attendance"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /attendance/{id}:
+    put:
+      operationId: updateAttendance
+      tags: [attendance]
+      summary: Update an attendance record
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AttendanceInput"
+      responses:
+        "200":
+          description: Updated attendance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Attendance"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+    delete:
+      operationId: deleteAttendance
+      tags: [attendance]
+      summary: Delete an attendance record
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Attendance deleted
+        "404":
+          $ref: "#/components/responses/NotFound"
 components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer, minimum: 1 }
+    Page:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 0, default: 0 }
+    PageSize:
+      name: size
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 10 }
+  responses:
+    ValidationError:
+      description: Validation failed
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Conflict:
+      description: Resource conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Unauthorized:
+      description: Authentication failed
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
   schemas:
     HealthStatus:
       type: object
@@ -33,4 +493,187 @@ components:
           type: string
       required:
         - status
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, minLength: 6 }
+    AuthUser:
+      type: object
+      required: [id, name, email, role]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        email: { type: string, format: email }
+        role: { type: string, enum: [ADMIN, STAFF] }
+    AuthResponse:
+      type: object
+      required: [token, user]
+      properties:
+        token: { type: string }
+        user: { $ref: "#/components/schemas/AuthUser" }
+    Department:
+      type: object
+      required: [id, name, code, description, studentCount, courseCount]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        code: { type: string }
+        description: { type: string }
+        studentCount: { type: integer }
+        courseCount: { type: integer }
+    DepartmentInput:
+      type: object
+      required: [name, code]
+      properties:
+        name: { type: string, minLength: 2, maxLength: 100 }
+        code: { type: string, minLength: 2, maxLength: 10 }
+        description: { type: string, maxLength: 500 }
+    Course:
+      type: object
+      required: [id, name, code, duration, departmentId, departmentName, studentCount]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        code: { type: string }
+        duration: { type: integer, minimum: 1 }
+        departmentId: { type: integer }
+        departmentName: { type: string }
+        description: { type: string }
+        studentCount: { type: integer }
+    CourseInput:
+      type: object
+      required: [name, code, duration, departmentId]
+      properties:
+        name: { type: string, minLength: 2, maxLength: 120 }
+        code: { type: string, minLength: 2, maxLength: 20 }
+        duration: { type: integer, minimum: 1, maximum: 10 }
+        departmentId: { type: integer, minimum: 1 }
+        description: { type: string, maxLength: 500 }
+    StudentStatus:
+      type: string
+      enum: [ACTIVE, INACTIVE, GRADUATED]
+    Gender:
+      type: string
+      enum: [MALE, FEMALE, OTHER]
+    Student:
+      type: object
+      required: [id, studentId, firstName, lastName, email, phone, dateOfBirth, gender, departmentId, departmentName, courseId, courseName, semester, admissionYear, status]
+      properties:
+        id: { type: integer }
+        studentId: { type: string }
+        firstName: { type: string }
+        lastName: { type: string }
+        email: { type: string, format: email }
+        phone: { type: string }
+        dateOfBirth: { type: string, format: date }
+        gender: { $ref: "#/components/schemas/Gender" }
+        address: { type: string }
+        city: { type: string }
+        state: { type: string }
+        pincode: { type: string }
+        departmentId: { type: integer }
+        departmentName: { type: string }
+        courseId: { type: integer }
+        courseName: { type: string }
+        semester: { type: integer }
+        admissionYear: { type: integer }
+        profileImage: { type: ["string", "null"] }
+        status: { $ref: "#/components/schemas/StudentStatus" }
+        attendancePercentage: { type: number }
+        createdAt: { type: string, format: date-time }
+    StudentInput:
+      type: object
+      required: [studentId, firstName, lastName, email, phone, dateOfBirth, gender, departmentId, courseId, semester, admissionYear, status]
+      properties:
+        studentId: { type: string, minLength: 4, maxLength: 20, pattern: "^[A-Za-z0-9-]+$" }
+        firstName: { type: string, minLength: 2, maxLength: 50 }
+        lastName: { type: string, minLength: 1, maxLength: 50 }
+        email: { type: string, format: email }
+        phone: { type: string, pattern: "^[6-9][0-9]{9}$" }
+        dateOfBirth: { type: string, format: date }
+        gender: { $ref: "#/components/schemas/Gender" }
+        address: { type: string, maxLength: 250 }
+        city: { type: string, maxLength: 80 }
+        state: { type: string, maxLength: 80 }
+        pincode: { type: string, pattern: "^[0-9]{6}$" }
+        departmentId: { type: integer, minimum: 1 }
+        courseId: { type: integer, minimum: 1 }
+        semester: { type: integer, minimum: 1, maximum: 12 }
+        admissionYear: { type: integer, minimum: 2000, maximum: 2030 }
+        profileImage: { type: ["string", "null"] }
+        status: { $ref: "#/components/schemas/StudentStatus" }
+    StudentPage:
+      type: object
+      required: [items, page, size, totalItems, totalPages]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Student" }
+        page: { type: integer }
+        size: { type: integer }
+        totalItems: { type: integer }
+        totalPages: { type: integer }
+    AttendanceStatus:
+      type: string
+      enum: [PRESENT, ABSENT, LATE, LEAVE]
+    Attendance:
+      type: object
+      required: [id, studentId, date, status]
+      properties:
+        id: { type: integer }
+        studentId: { type: integer }
+        date: { type: string, format: date }
+        status: { $ref: "#/components/schemas/AttendanceStatus" }
+        remarks: { type: string }
+    AttendanceInput:
+      type: object
+      required: [studentId, date, status]
+      properties:
+        studentId: { type: integer, minimum: 1 }
+        date: { type: string, format: date }
+        status: { $ref: "#/components/schemas/AttendanceStatus" }
+        remarks: { type: string, maxLength: 250 }
+    AttendanceSummary:
+      type: object
+      required: [totalClasses, present, absent, late, leave, attendancePercentage]
+      properties:
+        totalClasses: { type: integer }
+        present: { type: integer }
+        absent: { type: integer }
+        late: { type: integer }
+        leave: { type: integer }
+        attendancePercentage: { type: number }
+    DashboardSummary:
+      type: object
+      required: [totalStudents, activeStudents, newStudents, totalDepartments, totalCourses, averageAttendance, recentStudents, departmentDistribution]
+      properties:
+        totalStudents: { type: integer }
+        activeStudents: { type: integer }
+        newStudents: { type: integer }
+        totalDepartments: { type: integer }
+        totalCourses: { type: integer }
+        averageAttendance: { type: number }
+        recentStudents:
+          type: array
+          items: { $ref: "#/components/schemas/Student" }
+        departmentDistribution:
+          type: array
+          items:
+            type: object
+            required: [name, count, percentage]
+            properties:
+              name: { type: string }
+              count: { type: integer }
+              percentage: { type: number }
+    ErrorResponse:
+      type: object
+      required: [success, message]
+      properties:
+        success: { type: boolean }
+        message: { type: string }
+        errors:
+          type: object
+          additionalProperties: { type: string }
 
